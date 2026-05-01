@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LR — Home</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Preload hero portrait -->
+  <link rel="preload" as="image" href="assets/hero.png" />
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo-link">
+      <img src="assets/LR_logo2.png" alt="LR" class="nav-logo" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="videos.html">Videos</a></li>
+      <li><a href="bio.html">Bio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+<div class="page-wrapper">
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <section class="hero">
+
+    <!-- Layered background -->
+    <div class="hero-bg"></div>
+
+    <!-- Diagonal accent stripes -->
+    <div class="hero-stripe"></div>
+    <div class="hero-stripe hero-stripe-2"></div>
+
+    <!-- Portrait anchored bottom-right -->
+    <div class="hero-portrait">
+      <img src="assets/hero.png" alt="Portrait" draggable="false" />
+    </div>
+
+    <!-- Edge vignette -->
+    <div class="hero-vignette"></div>
+
+    <!-- Text content — bottom-left -->
+    <div class="hero-content">
+      <p class="hero-label">Orchestra Director &nbsp;·&nbsp; Violinist &nbsp;·&nbsp; Assistant Professor</p>
+      <h1 class="hero-name">
+        <span style="color:var(--text)">Leonardo</span>
+        <span>Rosario</span>
+      </h1>
+      <div class="hero-scroll">
+        <span class="hero-scroll-line"></span>
+        <span class="hero-scroll-text">Scroll</span>
+      </div>
+    </div>
+
+    <!-- Logo watermark bottom-right (above portrait) -->
+    <div class="hero-logo-bg">
+      <img src="assets/LR_logo2.png" alt="LR Logo" />
+    </div>
+
+  </section>
+
+   <!-- ── Stats / Intro strip ──────────────────────────────── -->
+<div class="intro-strip sr">
+  <div class="intro-stat sr-d1">
+  <div class="intro-stat-num" data-target="20" data-suffix="+">0+</div>
+  <div class="intro-stat-label">Years</div>
+  <div class="intro-stat-sub">Professional Career</div>
+</div>
+
+
+  <div class="intro-sep"></div>
+
+  <div class="intro-stat sr-d2">
+    <div class="intro-stat-num" data-target="10" data-suffix="+">0+</div>
+    <div class="intro-stat-label">International</div>
+    <div class="intro-stat-sub">Performances</div>
+  </div>
+
+  <div class="intro-sep"></div>
+
+  <div class="intro-stat sr-d3">
+    <div class="intro-stat-num" data-target="5" data-suffix="+">0+</div>
+    <div class="intro-stat-label">Years</div>
+    <div class="intro-stat-sub">Higher Ed Leadership</div>
+  </div>
+
+  <div class="intro-sep"></div>
+
+  <p class="intro-text sr-d4">
+    Orchestra conductor, violinist, and professor at Lee University, working with orchestras and institutions internationally.
+  </p>
+</div>
+
+
+  <!-- ── Featured Videos ──────────────────────────────────── -->
+ <div class="section" style="padding-left:0;padding-right:0;max-width:100%;">
+    <div style="padding: 0 clamp(24px,5vw,72px) 32px;">
+      <p class="eyebrow reveal">Featured</p>
+      <h2 class="section-title reveal reveal-delay-1">Recent Work</h2>
+    </div>
+    <div class="featured-videos">
+
+      <a href="https://youtu.be/LNQRGFkXuEY?si=Yrv9gBCsZvgOZ2Ft&t=3597" class="fv-item reveal">
+        <img src="https://picsum.photos/seed/conduct2/800/450" alt="Performance 1" />
+        <div class="fv-overlay">
+          <span class="fv-title">DVO&#344;&#193;K - Symphoy N. 9, mov. II</span>
+        </div>
+        <div class="fv-play">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+            <path d="M1 1L13 8L1 15V1Z" fill="white" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </a>
+
+      <a href="https://youtu.be/la7nuLhNohw?si=og4lF7VbJoMhIeFY&t=375" class="fv-item reveal reveal-delay-1">
+        <img src="https://picsum.photos/seed/conduct2/800/450" alt="Performance 2" />
+        <div class="fv-overlay">
+          <span class="fv-title">Gomes - Il Guarany Overture </span>
+        </div>
+        <div class="fv-play">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+            <path d="M1 1L13 8L1 15V1Z" fill="white" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </a>
+
+      <a href="https://youtu.be/la7nuLhNohw?si=Fbr8Xym_Jod9T27y&t=3280" class="fv-item reveal reveal-delay-2">
+        <img src="https://picsum.photos/seed/conduct3/800/450" alt="Performance 3" />
+        <div class="fv-overlay">
+          <span class="fv-title">Beethoven - Symphony No. 4, mov. I</span>
+        </div>
+        <div class="fv-play">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+            <path d="M1 1L13 8L1 15V1Z" fill="white" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </a>
+
+    </div>
+    <div style="padding: 32px clamp(24px,5vw,72px) 0; display:flex; justify-content:flex-end;">
+      <a href="videos.html" class="btn reveal">View All Videos &rarr;</a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+
+  <!-- ── Footer ───────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="assets/LR_logo2.png" alt="LR" />
+    </div>
+    <span class="footer-copy">&copy; 2026 Leonard Rosario. All rights reserved.</span>
+    <nav class="footer-links">
+      <a href="videos.html">Videos</a>
+      <a href="bio.html">Bio</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </footer>
+ </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LR — Videos</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── VIDEOS HERO ────────────────────────────────────────────────
+       Full-viewport section, dark bg, text bottom-left, overlapping images
+    ─────────────────────────────────────────────────────────── */
+    .videos-hero {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+      min-height: 680px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;           /* text anchors to center vertically */
+      justify-content: center;       /* text anchors to center horizontally */
+      background: var(--bg);
+    }
+
+    /* ── Background atmosphere ── */
+    .videos-hero__bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 72% 40%,
+          rgba(10,132,255,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 60% at 20% 80%,
+          rgba(10,132,255,0.05) 0%, transparent 55%);
+    }
+
+    /* Diagonal accent stripe */
+    .videos-hero__stripe {
+      position: absolute;
+      top: -10%; right: 22%;
+      width: 1px;
+      height: 130%;
+      background: linear-gradient(180deg,
+        transparent, rgba(10,132,255,0.22) 50%, transparent);
+      transform: rotate(-18deg);
+      transform-origin: top center;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── Portraits — absolute, anchored bottom-right, full height ── */
+    .videos-hero__portrait {
+      position: absolute;
+      bottom: 5vh; /* Move pictures up */
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+      will-change: transform;
+    }
+
+    .videos-hero__portrait--left {
+      left: clamp(-80px, -5vw, -20px);
+      right: auto;
+      height: 110%; /* Restored conductor to original size */
+      z-index: 1; 
+transform: translateY(13vh);
+    }
+
+    .videos-hero__portrait--right {
+      right: clamp(-240px, -15vw, -100px);
+      left: auto;
+      height: 100%; /* Made the violinist slightly smaller to match */
+      z-index: 1; 
+
+    }
+
+    .videos-hero__portrait img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      object-position: bottom center;
+      display: block;
+      filter: drop-shadow(-10px 0 30px rgba(11,11,13,0.85));
+    }
+    
+    /* Optional mask for left image to fade out where it overlaps */
+    .videos-hero__portrait--left img {
+      mask-image: linear-gradient(to right, black 50%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, black 50%, transparent 100%);
+      object-position: bottom left;
+    }
+    
+    .videos-hero__portrait--right img {
+      mask-image: linear-gradient(to left, black 50%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to left, black 50%, transparent 100%);
+      object-position: bottom right;
+    }
+
+    /* ── Vignette layer — pulls image into background, masks bottom ── */
+    .videos-hero__vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        /* Edge fade */
+        linear-gradient(90deg, rgba(11,11,13,0.7) 0%, transparent 20%, transparent 80%, rgba(11,11,13,0.7) 100%),
+        /* Bottom fade */
+        linear-gradient(0deg, var(--bg) 0%, rgba(11,11,13,0.8) 12%, transparent 30%),
+        /* Top fade */
+        linear-gradient(180deg, rgba(11,11,13,0.4) 0%, transparent 15%);
+    }
+
+    /* ── Text block — bottom-left, over vignette ── */
+    .videos-hero__content {
+      position: relative;
+      z-index: 4;
+      padding: 0 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .videos-hero__eyebrow {
+      font-family: var(--body);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: vheroUp 0.8s var(--ease) 0.2s forwards;
+    }
+
+    .videos-hero__name {
+      font-family: var(--display);
+      font-size: clamp(4rem, 11vw, 11rem);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: vheroUp 1s var(--ease) 0.4s forwards;
+    }
+    .videos-hero__name em {
+      display: block;
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .videos-hero__divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: vheroUp 0.7s var(--ease) 0.65s forwards;
+    }
+    .videos-hero__divider-line {
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+
+    .videos-hero__subtitle {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: vheroUp 0.7s var(--ease) 0.75s forwards;
+    }
+
+    /* Logo watermark — bottom-right corner */
+    .videos-hero__logo-wm {
+      position: absolute;
+      bottom: clamp(28px, 4vh, 52px);
+      right: clamp(20px, 3vw, 48px);
+      z-index: 5;
+      opacity: 0;
+      animation: vheroFade 1s ease 1s forwards;
+    }
+    .videos-hero__logo-wm img {
+      height: clamp(56px, 7vw, 96px);
+      width: auto;
+      filter: invert(1) brightness(1)
+              drop-shadow(0 0 16px rgba(10,132,255,0.35));
+      opacity: 0.18;
+    }
+
+    @keyframes vheroUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes vheroFade {
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .videos-hero__portrait { height: 70%; }
+      .videos-hero__portrait--left { left: 0; right: auto; }
+      .videos-hero__portrait--right { right: 0; left: auto; }
+      .videos-hero__name { font-size: clamp(3rem, 14vw, 5.5rem); }
+    }
+    @media (max-width: 480px) {
+      .videos-hero__portrait { height: 55%; opacity: 0.6; }
+    }
+
+    /* ── Grid wrapper: padding so cards don't touch screen edges */
+    .videos-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    @media (max-width: 600px) {
+      .videos-section { padding: 0 20px; }
+    }
+
+    /* ── Thumbnail-only video card ──────────────────────────── */
+    .video-card {
+      display: block;
+      text-decoration: none;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border, rgba(255,255,255,0.12));
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .video-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent, #c9a84c);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    }
+
+    .video-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+
+    .video-card:hover img {
+      opacity: 0.85;
+    }
+
+    /* Play button overlay */
+    .video-card-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .video-card:hover .video-card-play {
+      opacity: 1;
+    }
+
+    .video-card-play-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.65);
+      border: 2px solid var(--accent, #c9a84c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-card-play-circle svg {
+      margin-left: 4px;
+    }
+
+    /* ── Videos grid: 3 columns, generous gap ───────────────── */
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px;
+    }
+
+    @media (max-width: 860px) {
+      .videos-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    }
+
+    @media (max-width: 540px) {
+      .videos-grid { grid-template-columns: 1fr; gap: 20px; }
+    }
+
+    /* ── Filter: hide non-matching cards completely ─────────── */
+    .video-card.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="nav scrolled">
+    <a href="index.html" class="nav-logo-link">
+      <img src="assets/LR_logo2.png" alt="LR" class="nav-logo" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="videos.html">Videos</a></li>
+      <li><a href="bio.html">Bio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       VIDEOS HERO
+  ══════════════════════════════════════════════ -->
+  <section class="videos-hero">
+
+    <div class="videos-hero__bg"></div>
+    <div class="videos-hero__stripe"></div>
+
+    <!-- Left Portrait (conducting) -->
+    <div class="videos-hero__portrait videos-hero__portrait--left">
+      <img src="assets/Leo.png" alt="Leonardo Rosario conducting" draggable="false" />
+    </div>
+
+    <!-- Right Portrait (violinist) -->
+    <div class="videos-hero__portrait videos-hero__portrait--right">
+      <img src="assets/portrait-transparent1a.png" alt="Leonardo Rosario as violinist" draggable="false" />
+    </div>
+
+    <!-- Vignette: fades left, masks bottom completely -->
+    <div class="videos-hero__vignette"></div>
+
+    <!-- Text — bottom-left -->
+    <div class="videos-hero__content">
+      <p class="videos-hero__eyebrow">Leonardo Rosario</p>
+      <h1 class="videos-hero__name">
+        Video<br>
+        <em>Gallery</em>
+      </h1>
+      <div class="videos-hero__divider">
+        <span class="videos-hero__divider-line"></span>
+      </div>
+      <p class="videos-hero__subtitle">
+        Performances &amp; Highlights
+      </p>
+    </div>
+
+    <!-- Logo watermark -->
+    <div class="videos-hero__logo-wm">
+      <img src="assets/LR_logo2.png" alt="" aria-hidden="true" />
+    </div>
+
+  </section>
+
+  <div class="videos-section">
+
+  <!-- ── Filter Bar ───────────────────────────────────────── -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="conductor">Orchestra Conductor</button>
+    <button class="filter-btn" data-filter="violinist">Violinist</button>
+  </div>
+
+  <!-- ── Videos Grid ──────────────────────────────────────── -->
+  <div class="videos-grid">
+
+    <!-- 1 — Gomes -->
+    <a class="video-card reveal" data-category="conductor"
+       href="https://youtu.be/la7nuLhNohw?t=375" target="_blank" rel="noopener">
+      <img src="assets/il_guarany_thumbnail.png" alt="Il Guarany — Overture · Carlos Gomes" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 2 — Smetana -->
+    <a class="video-card reveal reveal-delay-1" data-category="conductor"
+       href="https://youtu.be/la7nuLhNohw?t=1380" target="_blank" rel="noopener">
+      <img src="assets/the_moldau_thumbnail.png" alt="The Moldau · Bedřich Smetana" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 3 — Beethoven Sym. 4, I -->
+    <a class="video-card reveal reveal-delay-2" data-category="conductor"
+       href="https://youtu.be/la7nuLhNohw?t=3280" target="_blank" rel="noopener">
+      <img src="assets/beethoven_sym4_mvt1.png" alt="Symphony No. 4 Mov. I · Beethoven" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 4 — Beethoven Sym. 4, II -->
+    <a class="video-card reveal" data-category="conductor"
+       href="https://youtu.be/la7nuLhNohw?t=4600" target="_blank" rel="noopener">
+      <img src="assets/beethoven_sym4_mvt2.png" alt="Symphony No. 4 Mov. II · Beethoven" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 5 — Beethoven Sym. 4, III -->
+    <a class="video-card reveal reveal-delay-1" data-category="conductor"
+       href="https://youtu.be/la7nuLhNohw?t=4601" target="_blank" rel="noopener">
+      <img src="assets/beethoven_sym4_mvt3.png" alt="Symphony No. 4 Mov. III · Beethoven" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 6 — Beethoven Sym. 4, IV -->
+    <a class="video-card reveal reveal-delay-2" data-category="conductor"
+       href="https://youtu.be/la7nuLhNohw?t=4990" target="_blank" rel="noopener">
+      <img src="assets/beethoven_sym4_mvt4.png" alt="Symphony No. 4 Mov. IV · Beethoven" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 7 — Tchaikovsky 1812 -->
+    <a class="video-card reveal" data-category="conductor"
+       href="https://youtu.be/LNQRGFkXuEY?t=266" target="_blank" rel="noopener">
+      <img src="assets/1812_overture_thumbnail.png" alt="1812 Overture · Tchaikovsky" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 8 — Strommen Prairiesong -->
+    <a class="video-card reveal reveal-delay-1" data-category="conductor"
+       href="https://youtu.be/LNQRGFkXuEY?t=1461" target="_blank" rel="noopener">
+      <img src="assets/prairiesong_thumbnail.png" alt="Prairiesong · Carl Strommen" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 9 — Dvořák Sym. 9, I -->
+    <a class="video-card reveal reveal-delay-2" data-category="conductor"
+       href="https://youtu.be/LNQRGFkXuEY?t=2962" target="_blank" rel="noopener">
+      <img src="assets/dvorak_mvt1.png" alt="Symphony No. 9 Mov. I · Dvořák" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 10 — Dvořák Sym. 9, II -->
+    <a class="video-card reveal" data-category="conductor"
+       href="https://youtu.be/LNQRGFkXuEY?t=3597" target="_blank" rel="noopener">
+      <img src="assets/dvorak_mvt2.png" alt="Symphony No. 9 Mov. II · Dvořák" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 11 — Dvořák Sym. 9, III -->
+    <a class="video-card reveal reveal-delay-1" data-category="conductor"
+       href="https://www.youtube.com/watch?v=LNQRGFkXuEY" target="_blank" rel="noopener">
+      <img src="assets/dvorak_mvt3.png" alt="Symphony No. 9 Mov. III · Dvořák" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 12 — Dvořák Sym. 9, IV -->
+    <a class="video-card reveal reveal-delay-2" data-category="conductor"
+       href="https://www.youtube.com/watch?v=LNQRGFkXuEY" target="_blank" rel="noopener">
+      <img src="assets/dvorak_mvt4.png" alt="Symphony No. 9 Mov. IV · Dvořák" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 13 — Piazzolla Otoño -->
+    <a class="video-card reveal" data-category="violinist"
+       href="https://www.youtube.com/watch?v=cql0Xdnmqes" target="_blank" rel="noopener">
+      <img src="assets/otono_porteno.png" alt="Otoño Porteño · Piazzolla" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 14 — Piazzolla Invierno -->
+    <a class="video-card reveal reveal-delay-1" data-category="violinist"
+       href="https://www.youtube.com/watch?v=9q4SCBwgUz0" target="_blank" rel="noopener">
+      <img src="assets/invierno_porteno.png" alt="Invierno Porteño · Piazzolla" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 15 — Piazzolla Primavera -->
+    <a class="video-card reveal reveal-delay-2" data-category="violinist"
+       href="https://www.youtube.com/watch?v=9q4SCBwgUz0" target="_blank" rel="noopener">
+      <img src="assets/primavera_portena.png" alt="Primavera Porteña · Piazzolla" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 16 — Piazzolla Verano -->
+    <a class="video-card reveal" data-category="violinist"
+       href="https://www.youtube.com/watch?v=PvkJgycVlVI" target="_blank" rel="noopener">
+      <img src="assets/verano_porteno.png" alt="Verano Porteño · Piazzolla" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 17 — Bach Suite 2 Prelude -->
+    <a class="video-card reveal reveal-delay-1" data-category="violinist"
+       href="https://www.youtube.com/watch?v=jhzKkSIGcUI" target="_blank" rel="noopener">
+      <img src="assets/bach_viola_thumbnail.png" alt="Prelude from Suite No. 2 for Viola · Bach" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 18 — Bruckner Salvum Fac -->
+    <a class="video-card reveal reveal-delay-2" data-category="violinist"
+       href="https://www.youtube.com/watch?v=J2cWu9CHXU8" target="_blank" rel="noopener">
+      <img src="assets/bruckner_thumbnail.png" alt="Salvum Fac · Bruckner" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 19 — Shostakovich Sym. 5 -->
+    <a class="video-card reveal" data-category="violinist"
+       href="https://www.youtube.com/watch?v=Bm04P29sF00" target="_blank" rel="noopener">
+      <img src="assets/shostakovich_symphony_5_thumbnail.png" alt="Symphony No. 5 · Shostakovich" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- 20 — Bartók Pihenő -->
+    <a class="video-card reveal reveal-delay-1" data-category="violinist"
+       href="https://www.youtube.com/watch?v=omEbu1vQ4TY" target="_blank" rel="noopener">
+      <img src="assets/bartok_thumbnail.png" alt="Pihenő from Contrasts · Bartók" loading="lazy" />
+      <div class="video-card-play">
+        <div class="video-card-play-circle">
+          <svg width="14" height="16" viewBox="0 0 10 12" fill="none">
+            <path d="M1 1L9 6L1 11V1Z" fill="var(--accent, #c9a84c)" stroke="var(--accent, #c9a84c)" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+
+  </div><!-- /.videos-grid -->
+
+  </div><!-- /.videos-section -->
+
+  <div class="divider" style="margin-top:80px;"></div>
+
+  <!-- ── Footer ───────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="assets/LR_logo2.png" alt="LR" />
+    </div>
+    <span class="footer-copy">&copy; 2026 Leonardo Rosario. All rights reserved.</span>
+    <nav class="footer-links">
+      <a href="videos.html">Videos</a>
+      <a href="bio.html">Bio</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    /* ── Filter: hide / show cards completely ─────────────── */
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+
+        document.querySelectorAll('.video-card').forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

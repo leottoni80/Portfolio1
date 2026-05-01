@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LR — Bio</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ================================================================
+       BIO PAGE
+       Hero: full-viewport, portrait absolutely positioned right,
+              text bottom-left — mirrors the index hero approach.
+       Below: prose + timeline + ticker
+    ================================================================ */
+
+    /* ── BIO HERO ────────────────────────────────────────────────
+       Full-viewport section, dark bg, portrait fills right side
+    ─────────────────────────────────────────────────────────── */
+    .bio-hero {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+      min-height: 680px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;           /* text anchors to bottom-left */
+      background: var(--bg);
+    }
+
+    /* ── Background atmosphere ── */
+    .bio-hero__bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 72% 40%,
+          rgba(10,132,255,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 60% at 20% 80%,
+          rgba(10,132,255,0.05) 0%, transparent 55%);
+    }
+
+    /* Diagonal accent stripe — same as index */
+    .bio-hero__stripe {
+      position: absolute;
+      top: -10%; right: 22%;
+      width: 1px;
+      height: 130%;
+      background: linear-gradient(180deg,
+        transparent, rgba(10,132,255,0.22) 50%, transparent);
+      transform: rotate(-18deg);
+      transform-origin: top center;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── Portrait — absolute, anchored bottom-right, full height ── */
+    .bio-hero__portrait {
+      position: absolute;
+      bottom: 0;
+      right: clamp(-20px, 0vw, 0px);
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+      will-change: transform;
+    }
+    .bio-hero__portrait img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      object-position: bottom center;
+      display: block;
+      /* Blue directional light matching index hero */
+      filter:
+        drop-shadow(-60px 0 80px rgba(10,132,255,0.15))
+        drop-shadow(-10px 0 30px rgba(11,11,13,0.85));
+    }
+
+    /* ── Vignette layer — pulls image into background, masks bottom ── */
+    .bio-hero__vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        /* Left fade: text area stays readable */
+        linear-gradient(90deg,
+          var(--bg) 0%,
+          var(--bg) 2%,
+          transparent 42%,
+          transparent 55%,
+          rgba(11,11,13,0.55) 100%),
+        /* Bottom fade: hides the portrait's bottom edge completely */
+        linear-gradient(0deg,
+          var(--bg) 0%,
+          var(--bg) 3%,
+          rgba(11,11,13,0.7) 12%,
+          transparent 28%),
+        /* Top fade */
+        linear-gradient(180deg,
+          rgba(11,11,13,0.3) 0%,
+          transparent 15%);
+    }
+
+    /* ── Text block — bottom-left, over vignette ── */
+    .bio-hero__content {
+      position: relative;
+      z-index: 4;
+      padding: 0 clamp(24px, 5vw, 80px) clamp(48px, 7vh, 88px);
+      max-width: 62%;
+    }
+
+    .bio-hero__eyebrow {
+      font-family: var(--body);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: bheroUp 0.8s var(--ease) 0.2s forwards;
+    }
+
+    .bio-hero__name {
+      font-family: var(--display);
+      font-size: clamp(4rem, 11vw, 11rem);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: bheroUp 1s var(--ease) 0.4s forwards;
+    }
+    .bio-hero__name em {
+      display: block;
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .bio-hero__divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: bheroUp 0.7s var(--ease) 0.65s forwards;
+    }
+    .bio-hero__divider-line {
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+
+    .bio-hero__subtitle {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: bheroUp 0.7s var(--ease) 0.75s forwards;
+    }
+    .bio-hero__subtitle .dot {
+      color: var(--accent);
+      margin: 0 8px;
+      opacity: 0.6;
+    }
+
+    /* Logo watermark — bottom-right corner */
+    .bio-hero__logo-wm {
+      position: absolute;
+      bottom: clamp(28px, 4vh, 52px);
+      right: clamp(20px, 3vw, 48px);
+      z-index: 5;
+      opacity: 0;
+      animation: bheroFade 1s ease 1s forwards;
+    }
+    .bio-hero__logo-wm img {
+      height: clamp(56px, 7vw, 96px);
+      width: auto;
+      filter: invert(1) brightness(1)
+              drop-shadow(0 0 16px rgba(10,132,255,0.35));
+      opacity: 0.18;
+    }
+
+    @keyframes bheroUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bheroFade {
+      to { opacity: 1; }
+    }
+
+    /* ── TICKER — immediately below hero ─────────────────────── */
+    .bio-ticker {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 12px 0;
+    }
+    .bio-ticker__track {
+      display: flex;
+      white-space: nowrap;
+      animation: btick 28s linear infinite;
+      width: max-content;
+    }
+    .bio-ticker__track span {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 24px;
+    }
+    .bio-ticker__track span.sep {
+      color: var(--accent);
+      padding: 0 4px;
+      letter-spacing: 0;
+    }
+    @keyframes btick {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── PROSE + TIMELINE — below fold ───────────────────────── */
+    .bio-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 72px clamp(24px, 5vw, 72px) 48px;
+    }
+
+    .bio-body__eyebrow {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+
+    .bio-body p {
+      font-size: clamp(0.93rem, 1.5vw, 1.05rem);
+      line-height: 1.9;
+      color: rgba(240,240,240,0.7);
+      margin-bottom: 22px;
+    }
+    .bio-body p.lead {
+      font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .bio-pull {
+      border-left: 2px solid var(--accent);
+      padding: 6px 0 6px 22px;
+      margin: 36px 0;
+    }
+    .bio-pull p {
+      font-family: var(--display);
+      font-size: clamp(1.2rem, 2.3vw, 1.7rem) !important;
+      color: var(--text) !important;
+      line-height: 1.25 !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* Timeline */
+    .bio-timeline {
+      margin-top: 64px;
+      border-top: 1px solid var(--border);
+    }
+    .bio-timeline__label {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 20px 0 0;
+      margin-bottom: 4px;
+    }
+    .bio-tl-row {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 24px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: baseline;
+    }
+    .bio-tl-year {
+      font-family: var(--display);
+      font-size: 0.88rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .bio-tl-content strong {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .bio-tl-content span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .bio-cta { margin-top: 44px; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .bio-hero__content { max-width: 90%; }
+      .bio-hero__portrait { height: 70%; }
+      .bio-hero__name { font-size: clamp(3rem, 14vw, 5.5rem); }
+    }
+    @media (max-width: 480px) {
+      .bio-hero__portrait { height: 55%; opacity: 0.6; }
+      .bio-hero__content { max-width: 96%; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="nav">
+    <a href="index.html">
+      <img src="assets/LR_logo2.png" alt="LR" class="nav-logo" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="videos.html">Videos</a></li>
+      <li><a href="bio.html" class="active">Bio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       BIO HERO — full viewport, mirrors index hero
+  ══════════════════════════════════════════════ -->
+  <section class="bio-hero">
+
+    <div class="bio-hero__bg"></div>
+    <div class="bio-hero__stripe"></div>
+
+    <!-- Portrait — absolute, full height, anchored bottom-right -->
+    <div class="bio-hero__portrait">
+      <img src="assets/portrait-transparent.png"
+           alt="Leonardo Rosario"
+           draggable="false" />
+    </div>
+
+    <!-- Vignette: fades left, masks bottom completely -->
+    <div class="bio-hero__vignette"></div>
+
+    <!-- Text — bottom-left -->
+    <div class="bio-hero__content">
+      <p class="bio-hero__eyebrow">Leonardo Rosario</p>
+      <h1 class="bio-hero__name">
+        
+        <em>Biography</em>
+      </h1>
+      <div class="bio-hero__divider">
+        <span class="bio-hero__divider-line"></span>
+      </div>
+      <p class="bio-hero__subtitle">
+        Orchestra Director
+        <span class="dot">·</span>
+        Violinist
+        <span class="dot">·</span>
+        Assistant Professor of Music
+      </p>
+    </div>
+
+    <!-- Logo watermark -->
+    <div class="bio-hero__logo-wm">
+      <img src="assets/LR_logo2.png" alt="" aria-hidden="true" />
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       TICKER
+  ══════════════════════════════════════════════ -->
+  <div class="bio-ticker" aria-hidden="true">
+    <div class="bio-ticker__track">
+      <span>Orchestra Director</span><span class="sep">·</span>
+      <span>Violinist</span><span class="sep">·</span>
+      <span>Assistant Professor of Music</span><span class="sep">·</span>
+      <span>Lee University</span><span class="sep">·</span>
+      <span>Educator</span><span class="sep">·</span>
+      <span>Clinician</span><span class="sep">·</span>
+      <span>Cleveland, TN</span><span class="sep">·</span>
+      <span>Orchestra Director</span><span class="sep">·</span>
+      <span>Violinist</span><span class="sep">·</span>
+      <span>Assistant Professor of Music</span><span class="sep">·</span>
+      <span>Lee University</span><span class="sep">·</span>
+      <span>Educator</span><span class="sep">·</span>
+      <span>Clinician</span><span class="sep">·</span>
+      <span>Cleveland, TN</span><span class="sep">·</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       BIOGRAPHY PROSE
+  ══════════════════════════════════════════════ -->
+  <div class="bio-body">
+
+    <p class="bio-body__eyebrow sr">Full Biography</p>
+
+    <p class="lead sr">
+      Dr. Leonardo Rosario is an accomplished violinist, conductor, and educator, currently serving as Director of the Symphony Orchestra and Assistant Professor of Strings at Lee University, where he teaches undergraduate and graduate students in violin, viola, and conducting.
+    </p>
+
+    <p class="sr">
+      Leonardo began his violin studies with Sibila Schelin, later continuing with Cecilia Guida and Ayrton Pinto. He has participated in masterclasses with distinguished artists including Leon Spier and Lorenz Nasturica (Berliner Philharmoniker), Lavard Skou-Larsen (Universität Mozarteum, Austria), Renata Kubala (Symfoniorkester Trondheim, Norway), and Gerardo Ribeiro (Northwestern University, Chicago).
+    </p>
+
+    <p class="sr">
+      From 2003 to 2005, he was a member of the Youth Orchestra of the Americas (YOA), serving as principal second violin during its inaugural season and touring across nine countries in North, Central, and South America. He also performed with the University of São Paulo (USP) Chamber Orchestra as concertmaster, the São Paulo State University (UNESP) Chamber Orchestra, and the Experimental Repertoire Orchestra. In addition, he attended the Festival Internacional de Campos do Jordão in 1999, 2000, and 2005, performing under the batons of Kurt Masur, Lorin Maazel, Gustavo Dudamel, among others.
+    </p>
+
+    <div class="bio-pull sr">
+      <p>"It is important to me as an artitst to expose the audience and my students to a 
+variety of composers, styles, ethnics, and genre. It broadens their world."</p>
+    </div>
+
+    <p class="sr">
+     In 2008, Leonardo earned his Master’s degree with full scholarship at the Boston Conservatory, studying with Irina Muresanu. During this time, he appeared as soloist with the Conservatory Orchestra on two occasions, performing Brahms’s Violin Concerto and Beethoven’s Triple Concerto. He was also selected as a member of the Conservatory’s Honors Quartet, which won second prize at the International Chamber Music Competition of the Chamber Music Foundation of New England. Concurrently, he pursued additional studies with Mela Tenenbaum in New York.
+    </p>
+
+    <p class="sr">
+      Upon returning to Brazil, Leonardo joined the Minas Gerais Philharmonic Orchestra (2008–2015), founded and managed the Camerata Pampulha Chamber Group, and performed with the Othello Quartet. He later returned to the United States to complete his Doctor of Musical Arts at the University of North Carolina–Greensboro under Fabian Lopez, while serving as Assistant Concertmaster of the Fayetteville Symphony Orchestra. From 2018 to 2020, he was Orchestra Director at Bradford Preparatory School, teaching grades 4–12.
+    </p>
+
+<p class="sr">
+
+In 2020, Leonardo was appointed Assistant Professor of Music, Director of the Strings Area, and Director of Orchestras at Kansas Wesleyan University (KWU). Over five years, he expanded the orchestra program and strings department, served as a guest clinician for numerous honor orchestras, and frequently conducted and led violin sectionals for the Kansas Music Educators Association (KMEA) Orchestras. He also performed with the Salina Symphony Orchestra and conducted the Salina Youth Symphony Orchestra.
+</p>
+
+
+    <!-- Timeline -->
+    <div class="bio-timeline sr">
+      <p class="bio-timeline__label">Selected Milestones</p>
+
+      <div class="bio-tl-row">
+        <span class="bio-tl-year">2025</span>
+        <div class="bio-tl-content">
+          <strong>Lee Symphony Orchestra</strong>
+          <span>Orchestra Director &amp; Assistant Professor of Music | Lee University — Cleveland, TN</span> 
+        </div>
+      </div>
+      <div class="bio-tl-row">
+        <span class="bio-tl-year">2025</span>
+        <div class="bio-tl-content">
+          <strong>East Tennessee State Band and Orchestra Association | All East</strong>
+          <span>Guest Conducting / Clinician - Knoxville, TN</span>
+        </div>
+      </div>
+ <div class="bio-tl-row">
+        <span class="bio-tl-year">2025</span>
+        <div class="bio-tl-content">
+          <strong>Lee University Concerto Competition</strong>
+          <span>Judge & Orchestra Director - Lee University, TN</span>
+        </div>
+      </div>
+
+      <div class="bio-tl-row">
+        <span class="bio-tl-year">2025</span>
+        <div class="bio-tl-content">
+          <strong>Musical Orchestra Director: Sweeney Todd</strong>
+          <span>Salina Theatre - Salina, KS</span>
+        </div>
+      </div>
+      <div class="bio-tl-row">
+        <span class="bio-tl-year">2025</span>
+        <div class="bio-tl-content">
+          <strong>Kansas State University</strong>
+          <span>Judge of the K-State Honor Recital Final Round</span>
+        </div>
+      </div>
+      <div class="bio-tl-row">
+        <span class="bio-tl-year">2024</span>
+        <div class="bio-tl-content">
+          <strong>International Masterclasses Berlin</strong>
+          <span>Selected to participate in the masterclass to conduct the Berlin Sinfonietta</span>
+        </div>
+      </div>
+      <div class="bio-tl-row">
+        <span class="bio-tl-year">2024</span>
+        <div class="bio-tl-content">
+          <strong>Southeast Kansas Music Education Association District Orchestra</strong>
+          <span>Guest Conducting / Clinician, Pittsburg State University, KS - Pittsburg, KS</span>
+        </div>
+      </div>
+      <div class="bio-tl-row">
+        <span class="bio-tl-year">2020</span>
+        <div class="bio-tl-content">
+          <strong>Kansas Wesleyan University Orchestra</strong>
+          <span>Orchestra Director &amp; Assistant Professor of Music | Kansas Wesleyan University — Salina, KS<</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bio-cta sr">
+      <a href="contact.html" class="btn">Get in Touch &rarr;</a>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── Footer ───────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="assets/LR_logo2.png" alt="LR" />
+    </div>
+    <span class="footer-copy">&copy; 2026 Leonardo Rosario. All rights reserved.</span>
+    <nav class="footer-links">
+      <a href="videos.html">Videos</a>
+      <a href="bio.html">Bio</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

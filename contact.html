@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LR — Contact</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .contact-page-wrap {
+      padding-top: calc(var(--nav-h) + 80px);
+      padding-bottom: 80px;
+    }
+    .contact-page-header {
+      position: relative;
+      padding: 0 clamp(24px,5vw,72px) 0;
+      background: radial-gradient(ellipse 50% 60% at 50% 100%, rgba(10,132,255,0.06) 0%, transparent 70%);
+    }
+    .contact-page-header h1 {
+      font-family: var(--display);
+      font-size: clamp(4rem, 12vw, 10rem);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      animation: cheroUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+      padding-bottom: 64px;
+    }
+    @keyframes cheroUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .contact-page-header h1 em {
+      color: var(--accent);
+      font-style: normal;
+    }
+    .contact-page-header-inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: clamp(32px, 5vw, 72px);
+    }
+    .contact-hero-photo {
+      flex-shrink: 0;
+      width: clamp(400px, 55vw, 900px); /* Made it much larger */
+      max-height: 85vh;
+      border-radius: 0;
+      object-fit: contain;
+      object-position: bottom center;
+      display: block;
+      filter: drop-shadow(-10px 0 30px rgba(11,11,13,0.6));
+      opacity: 0;
+      animation: cheroUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+    }
+    @media (max-width: 700px) {
+      .contact-page-header-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    /* Floating label trick */
+    .form-field {
+      position: relative;
+    }
+
+    /* Select arrow */
+    .field-select-wrap {
+      position: relative;
+    }
+    .field-select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px; height: 8px;
+      border-right: 1.5px solid var(--muted);
+      border-bottom: 1.5px solid var(--muted);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+    }
+    select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    /* Availability note */
+    .availability-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .avail-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.5);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="nav scrolled">
+    <a href="index.html">
+      <img src="assets/LR_logo2.png" alt="LR" class="nav-logo" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="videos.html">Videos</a></li>
+      <li><a href="bio.html">Bio</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="contact-page-wrap">
+
+    <!-- ── Page Header ──────────────────────────────────── -->
+    <div class="contact-page-header">
+      <p class="eyebrow"></p>
+      <div class="contact-page-header-inner">
+        <h1>Get in<br /><em>Touch</em></h1>
+        <img src="assets/Leo_transparent2.png" alt="Leonardo Rosario" class="contact-hero-photo" />
+      </div>
+    </div>
+
+    <!-- ── Contact layout ───────────────────────────────── -->
+    <div class="section" style="padding-top:0;">
+      <div class="contact-layout">
+
+        <!-- Left: info -->
+        <div>
+          <p class="contact-info-title reveal">Contact Me</p>
+          <p class="contact-info-body reveal">
+            I will get back to you soon.
+          </p>
+
+          <div class="contact-links">
+
+            <a href="mailto:leottoni80@gmail.com" class="contact-link reveal">
+              <span class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/>
+                  <path d="M2 7l10 7 10-7"/>
+                </svg>
+              </span>
+              leottoni80@gmail.com
+            </a>
+
+            <a href="tel:+17858229026" class="contact-link reveal reveal-delay-1">
+              <span class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.1 4.1 2 2 0 012.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                </svg>
+              </span>
+              +1 (785) 822 - 9026
+            </a>
+
+            <a href="#" class="contact-link reveal reveal-delay-2">
+              <span class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M21 2H3v16h5l3 3 3-3h7V2z"/>
+                </svg>
+              </span>
+              Facebook
+            </a>
+
+            <a href="#" class="contact-link reveal reveal-delay-3">
+              <span class="contact-link-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+              </span>
+              Instragram
+            </a>
+
+          </div>
+
+           </div>
+
+
+        <!-- Right: form -->
+        <div class="reveal reveal-delay-1">
+          <form class="contact-form" novalidate>
+
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="fname">First Name</label>
+                <input type="text" id="fname" name="fname" placeholder="Jane" required />
+              </div>
+              <div class="form-field">
+                <label for="lname">Last Name</label>
+                <input type="text" id="lname" name="lname" placeholder="Smith" required />
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" placeholder="jane@example.com" required />
+            </div>
+
+            <div class="form-field">
+              <label for="org">Organization (optional)</label>
+              <input type="text" id="org" name="org" placeholder="Symphony, University, etc." />
+            </div>
+
+            <div class="form-field">
+              <label for="type">Inquiry Type</label>
+              <div class="field-select-wrap">
+                <select id="type" name="type">
+                  <option value="" disabled selected>Select a category</option>
+		  <option value="lessons">Violin/Viola/Conducting Lessons</option>
+                  <option value="events">Events</option>
+                  <option value="media">Media / Press</option>
+                  <option value="education">Educational Partnership</option>
+                  <option value="general">General Inquiry</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="Tell me about your project, event, or question…" required></textarea>
+            </div>
+
+            <div>
+              <button type="submit" class="btn">Send Message</button>
+              <p class="form-status" role="status"></p>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── Footer ───────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <img src="assets/LR_logo2.png" alt="LR" />
+    </div>
+    <span class="footer-copy">&copy; 2026 Leonardo Rosario. All rights reserved.</span>
+    <nav class="footer-links">
+      <a href="videos.html">Videos</a>
+      <a href="bio.html">Bio</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
