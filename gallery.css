@@ -1,0 +1,335 @@
+/* ============================================================
+   GALLERY.CSS — Vertical Carousel Edition
+   ============================================================ */
+
+:root {
+  --card-w: 360px;
+  --card-h: 160px;
+
+  --bg-deep: #080808;
+  --text-primary: #ffffff;
+  --text-muted: rgba(255,255,255,0.55);
+
+  --t-fast: 0.25s ease;
+  --t-mid: 0.45s ease;
+}
+
+/* RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; background: var(--bg-deep); overflow: hidden; }
+
+/* Prevent blink on load */
+body:not(.ready) * { transition: none !important; }
+
+/* STAGE */
+.gallery-stage {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TITLE */
+.stage-header {
+  padding-top: 32px;
+  z-index: 10;
+}
+.stage-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  letter-spacing: 0.35em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+/* PERFORMERS */
+.performers {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  position: relative;
+}
+
+/* PANELS */
+.performer-panel {
+  flex: 1 1 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  transition: flex-basis 0.6s ease;
+}
+
+/* EXPANSION */
+.performers:has(.performer-panel--left:hover) .performer-panel--left { flex-basis: 82%; }
+.performers:has(.performer-panel--left:hover) .performer-panel--right { flex-basis: 18%; }
+
+.performers:has(.performer-panel--right:hover) .performer-panel--right { flex-basis: 82%; }
+.performers:has(.performer-panel--right:hover) .performer-panel--left { flex-basis: 18%; }
+
+/* FIGURES */
+.performer-figure {
+  height: 72vh;
+  position: absolute;
+  bottom: 0;
+  z-index: 5;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  transform-origin: bottom center;
+}
+.performer-figure img {
+  height: 100%;
+  mix-blend-mode: lighten;
+}
+
+/* Base positions */
+.performer-figure--violinist { left: 50%; transform: translateX(-40%); }
+.performer-figure--conductor { right: 50%; transform: translateX(40%); }
+
+/* SHRINK THE DIMMED SIDE */
+.performers:has(.performer-panel--left:hover) .performer-panel--right .performer-figure {
+  transform: translateX(40%) scale(0.82);
+  opacity: 0.55;
+}
+.performers:has(.performer-panel--right:hover) .performer-panel--left .performer-figure {
+  transform: translateX(-40%) scale(0.82);
+  opacity: 0.55;
+}
+
+/* LABELS */
+.panel-label {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: white;
+  z-index: 20;
+}
+.performer-panel--left .panel-label { margin-left: 60px; }
+.performer-panel--right .panel-label { margin-left: -60px; }
+
+/* ============================================================
+   VERTICAL CAROUSEL
+   ============================================================ */
+
+.v-carousel {
+  position: absolute;
+  top: 50%;
+  width: var(--card-w);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.v-carousel--left { left: 2%; transform: translate(-20px, -50%); }
+.v-carousel--right { right: 2%; transform: translate(20px, -50%); }
+
+.performer-panel:hover .v-carousel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, -50%);
+}
+
+/* ARROWS */
+.v-arrow {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background var(--t-fast);
+}
+.v-arrow:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+/* TRACK */
+.v-track {
+  height: calc((var(--card-h) * 3) + 36px);
+  flex: 0 0 auto;
+  width: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-right: 6px;
+}
+
+/* Hide scrollbar */
+.v-track::-webkit-scrollbar { width: 0; }
+
+/* CARD */
+.v-card {
+  width: var(--card-w);
+  height: var(--card-h);
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+}
+.v-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.v-card p {
+  display: none;
+}
+
+/* ============================================================
+   PATCH — 2‑CARD VISIBLE CAROUSEL + BETTER READABILITY
+   ============================================================ */
+
+/* 1. Larger, more readable cards */
+:root {
+  --card-w: 360px;   /* wider for readability */
+  --card-h: 210px;   /* taller to preserve poster proportions */
+}
+
+/* 2. Show only 2 cards at a time */
+.v-track {
+  height: calc((var(--card-h) * 2) + 18px); /* 2 cards + gap */
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-right: 6px;
+  align-items: center;
+}
+
+/* 3. Ensure arrows stay visible and centered */
+.v-carousel {
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--card-w);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.v-arrow {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 4. Prevent bottom card clipping */
+.v-card {
+  width: var(--card-w);
+  height: var(--card-h);
+  flex-shrink: 0;
+}
+
+/* 5. Smooth cinematic figure shrink */
+.performer-figure {
+  transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+              opacity 1.2s ease;
+  transform-origin: center bottom;
+}
+/* ============================================================
+   PATCH — Fix bottom card clipping and arrow alignment
+   ============================================================ */
+
+/* 1. Adjust carousel height to account for arrows */
+.v-track {
+  height: calc((var(--card-h) * 2) + 60px); /* 2 cards + gaps + arrow space */
+  overflow-y: hidden; /* prevent clipping */
+  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 6px;
+  align-items: center;
+}
+
+/* 2. Center arrows relative to visible cards */
+.v-carousel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* evenly distribute arrows and cards */
+  height: calc((var(--card-h) * 2) + 120px); /* total visible area + breathing room */
+}
+
+/* 3. Smooth figure shrink transition */
+.performer-figure {
+  transition: transform 1.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+              opacity 1.4s ease;
+  transform-origin: center bottom;
+}
+
+.video-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 9999;
+}
+
+.video-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-modal-content {
+  position: relative;
+  width: 80vw;
+  height: 45vw;
+  max-width: 1200px;
+  max-height: 675px;
+  animation: fadeIn 0.4s ease;
+}
+
+#video-frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.video-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  font-size: 2.5rem;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+
+
+
